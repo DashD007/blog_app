@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog App</title>
+  <link href="/images/favicon.ico" rel="icon">
+  <link href="https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/usermaster/style.css" />
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+</head>
+
+<body>
+  <!-- Navbar / Header -->
+  <nav>
+    <% if (role === 'admin') { %>
+      <button class="btn btn-outline-light menu-btn">☰</button>
+    <% } %> 
+
+    <button class="btn btn-danger ms-auto" id="logout-btn">Logout</button>
+  </nav>
+
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="bg-dark text-white position-fixed h-100 p-3">
+    <div id="menu-btn-container">
+      <h4 class="mb-4">Menu</h5>
+        <button class="btn btn-outline-light me-3 menu-btn">X</button>
+    </div>
+    <ul class="nav flex-column mt-3">
+      <li class="nav-item"><a href="/dashboard" class="nav-link text-white">Dashboard</a></li>
+      <li class="nav-item"><a href="/categorymaster" class="nav-link text-white">Category master</a></li>
+      <li class="nav-item"><a href="/usermaster" class="nav-link text-white">User and Role master</a></li>
+    </ul>
+  </div>
+
+  <!-- Main Section -->
+  <main class="container-fluid">
+    <div id="detail-card-container">
+      <div class="detail-card">
+        <p class="count-text" id="userCount"></p>
+        <p class="card-name-text">No. of users</p>
+      </div>
+
+      <div class="detail-card">
+        <p class="count-text" id="roleCount"></p>
+        <p class="card-name-text">No. of roles</p>
+      </div>
+      <button class="detail-card add-user" >
+        <p class="count-text add-symbol-text">+</p>
+        <p class="card-name-text">Add user</p>
+      </button>
+      <button class="detail-card add-role" >
+        <p class="count-text add-symbol-text">+</p>
+        <p class="card-name-text">Add role</p>
+      </button>
+    </div>
+    <div id="usermaster-container">
+      <h2>Users</h2>
+      <table class="table table-striped table-hover align-middle rounded-lg w-100" id="userTable">
+        <thead class="table-light">
+          <tr>
+            <th>S no.</th>
+            <th>Username</th>
+            <th>Email ID</th>
+            <th>Role</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody">
+          <!-- Rows appended dynamically -->
+        </tbody>
+      </table>
+      <h2>Roles</h2>
+      <table class="table table-striped table-hover align-middle rounded-lg" id="roleTable">
+        <thead class="table-light">
+          <tr>
+            <th>S no.</th>
+            <th>Role</th>
+            <th>Created At</th>
+          </tr>
+        </thead>
+        <tbody id="roleTableBody">
+          <!-- Rows appended dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <div id="user-creation-dailog">
+      <div style="display: flex; flex-direction: row; justify-content:space-between; width: 50%; margin:0 auto; margin-bottom: 10px;">
+        <h2>Add user</h2>
+        <button class="btn add-user" style="border: none; background-color: #2C2C2C; color:white">X</button>
+      </div>
+      <form id="user-creation">
+        <div class="mb-3 w-50">
+          <label for="username" class="form-label">Username</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="username" 
+            placeholder="Enter username" 
+            required>
+        </div>
+        <div class="mb-3 w-50">
+          <label for="email" class="form-label">Email address</label>
+          <input 
+            type="email" 
+            class="form-control" 
+            id="email" 
+            placeholder="Enter email" 
+            required>
+        </div>
+        <div class="mb-3 w-50">
+          <label for="password" class="form-label">Password</label>
+          <input 
+            type="password" 
+            class="form-control" 
+            id="password" 
+            placeholder="Enter password" 
+            required >
+        </div>
+
+        <div class="mb-3 w-50" >
+          <label for="role" class="form-label">Role</label>
+          <select 
+            class="form-control select-role" 
+            id="role" 
+            placeholder="select role" 
+            required>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-50 align-middle">Add</button>
+      </form>
+    </div>
+
+    <div id="role-creation-dailog">
+      <div style="display: flex; flex-direction: row; justify-content:space-between; width: 50%; margin:0 auto; margin-bottom: 10px;">
+        <h2>Add role</h2>
+        <button class="btn add-role" style="border: none; background-color: #2C2C2C; color:white">X</button>
+      </div>
+      <form id="role-creation">
+        <div class="mb-3 w-50">
+          <label for="name" class="form-label">name</label>
+          <input 
+            type="text" 
+            class="form-control" 
+            id="name" 
+            placeholder="Enter role name" 
+            required>
+        </div>
+
+        <!-- Dropdown wrapper -->
+        <div class="dropdown w-50 mb-3">
+          <!-- Input-like container -->
+          <label class="form-label">Permissions to control user</label>
+          <div class="multiselect-container form-control w-100 d-flex align-items-center" id="users-permissions" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="text-muted w-100">Select options...</span>
+          </div>
+
+          <!-- Dropdown menu -->
+          <ul class="dropdown-menu p-2" style="width: 100%;">
+            <li><label class="dropdown-item"><input type="checkbox" value="user.create" class="form-check-input me-2">Create</label></li>
+            <li><label class="dropdown-item"><input type="checkbox" value="user.list" class="form-check-input me-2">List</label></li>
+          </ul>
+        </div>
+
+        <!-- Dropdown wrapper -->
+        <div class="dropdown w-50 mb-3">
+          <!-- Input-like container -->
+          <label class="form-label">Permissions to control roles</label>
+          <div class="multiselect-container form-control w-100 d-flex align-items-center" id="roles-permissions" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="text-muted w-100">Select options...</span>
+          </div>
+
+          <!-- Dropdown menu -->
+          <ul class="dropdown-menu p-2" style="width: 100%;">
+            <li><label class="dropdown-item"><input type="checkbox" value="role.create" class="form-check-input me-2">Create</label></li>
+            <li><label class="dropdown-item"><input type="checkbox" value="role.list" class="form-check-input me-2">List</label></li>
+          </ul>
+        </div>
+
+        <!-- Dropdown wrapper -->
+        <div class="dropdown w-50 mb-3">
+          <!-- Input-like container -->
+          <label class="form-label">Permissions to control categories</label>
+          <div class="multiselect-container form-control w-100 d-flex align-items-center" id="categories-permissions" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="text-muted w-100">Select options...</span>
+          </div>
+
+          <!-- Dropdown menu -->
+          <ul class="dropdown-menu p-2" style="width: 100%;">
+            <li><label class="dropdown-item"><input type="checkbox" value="category.create" class="form-check-input me-2">Create</label></li>
+            <li><label class="dropdown-item"><input type="checkbox" value="category.list" class="form-check-input me-2">List</label></li>
+          </ul>
+        </div>
+
+        <!-- Dropdown wrapper -->
+        <div class="dropdown w-50 mb-3">
+          <!-- Input-like container -->
+          <label class="form-label">Permissions to control blogs</label>
+          <div class="multiselect-container form-control w-100 d-flex align-items-center" id="blogs-permissions" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="text-muted w-100">Select options...</span>
+          </div>
+
+          <!-- Dropdown menu -->
+          <ul class="dropdown-menu p-2" style="width: 100%;">
+            <li><label class="dropdown-item"><input type="checkbox" value="blog.create" class="form-check-input me-2">Create</label></li>
+            <li><label class="dropdown-item"><input type="checkbox" value="blog.list" class="form-check-input me-2">List</label></li>
+            <li><label class="dropdown-item"><input type="checkbox" value="blog.get" class="form-check-input me-2">Get</label></li>
+          </ul>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-50 align-middle">Add</button>
+      </form>
+    </div>
+  </main>
+
+  <div id="toastContainer" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999"></div>
+
+  <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
+    crossorigin="anonymous"></script>
+  <script src="/toast/script.js"></script>
+  <script src="/usermaster/script.js"></script>
+</body>
+
+</html>
