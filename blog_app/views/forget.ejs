@@ -15,8 +15,8 @@
 <body>
   <main >
     <div class="login-card">
-      <h3 class="text-center mb-4">Login</h3>
-      <form id="loginForm">
+      <h3 class="text-center mb-4">Forgot Password</h3>
+      <form id="forgetPassword">
         <div class="mb-3">
           <label for="email" class="form-label">Email address</label>
           <input 
@@ -26,18 +26,8 @@
             placeholder="Enter your email" 
             required>
         </div>
-        <div class="mb-3">
-          <label for="password" class="form-label">Password</label>
-          <input 
-            type="password" 
-            class="form-control" 
-            id="password" 
-            placeholder="Enter your password" 
-            required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Login</button>
+        <button type="submit" class="btn btn-primary w-100">Get OTP</button>
       </form>
-      <a href="/forgot" style="text-decoration: none; color:#fff; margin-top: 7px;" class="form-label text-center"><p>Forget Password?</p></a>
       <div id="responseMessage"></div>
     </div>
   </main>
@@ -46,6 +36,6 @@
   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
   <script src="/toast/script.js"></script>
-  <script src="/login/script.js" ></script>
+  <script src="/forgetPassword/script.js" ></script>
 </body>
 </html>

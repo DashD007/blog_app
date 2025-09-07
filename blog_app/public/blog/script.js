@@ -12,7 +12,7 @@ $(document).ready(function(){
       success: function(response) {
         console.log(response);
         if(response.success) {
-          window.location.href = "/dashboard";
+          location.reload();
         }
       },
       error: function(error) {

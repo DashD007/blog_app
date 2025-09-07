@@ -1,5 +1,5 @@
 import asyncHandler from "../utils/AsyncHandler.js";
-import {categorySchema, updateCategorySchema} from "../schemas/category.schema.js"
+import {categorySchema, deleteCategorySchema, updateCategorySchema} from "../schemas/category.schema.js"
 import ApiError from "../utils/ApiError.js";
 import Category from "../models/category.model.js";
 import slugifyTitle from "../utils/slugify.js";
@@ -53,21 +53,21 @@ const updateCategory = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Permission prohibited");
     }
 
-    const {newName,oldName} = value;
+    const {id,newName} = value;
 
     const exist = await Category.findOne({where:{
-        slug:slugifyTitle(oldName),
+        slug:slugifyTitle(newName),
     }});
 
-    if(!exist){
-        throw new ApiError(400,"Category doesn't exist");
+    if(exist){
+        throw new ApiError(400,"Category already exist with given name");
     }
 
     const category = await Category.update({
         name:newName,
         slug:slugifyTitle(newName),
     },{where:{
-        id:exist?.id,
+        id,
     }});
 
     if(!category){
@@ -80,7 +80,7 @@ const updateCategory = asyncHandler(async(req,res) => {
 const deleteCategory = asyncHandler(async(req,res) => {
     const {user} = req.session;
 
-    const {error,value} = categorySchema.validate(req.body);
+    const {error,value} = deleteCategorySchema.validate(req.body);
 
     if(error){
         throw new ApiError(400,error.message || "Please provide all details");
@@ -90,10 +90,10 @@ const deleteCategory = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Permission prohibited");
     } 
 
-    const {name} = value;
+    const {id} = value;
 
     const exist = await Category.findOne({where:{
-        slug:slugifyTitle(name),
+        id
     }});
 
     if(!exist){

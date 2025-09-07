@@ -21,11 +21,24 @@ $(document).ready(function () {
   });
 
 
+  // Close on ESC
+  $(document).on("keydown", function(e) {
+    if (e.key === "Escape" && $("#blog-creation-dailog").is(":visible")) {
+      $("#blog-creation-dailog").css("display", "none");
+      $("#detail-card-container").css("display", "grid");
+      $("#blogContainer").css("display", "grid");
+    }
+  });
+
   $(".add-blog").click(function () {
     if ($("#blog-creation-dailog").is(":visible")) {
       $("#blog-creation-dailog").css("display", "none");
+      $("#detail-card-container").css("display", "grid");
+      $("#blogContainer").css("display", "grid");
     } else {
       $("#blog-creation-dailog").css("display", "block");
+      $("#detail-card-container").css("display", "none");
+      $("#blogContainer").css("display", "none");
     }
   });
 
@@ -53,11 +66,12 @@ $(document).ready(function () {
       processing: true,
       serverSide: true,
       paging: true,
-      pageLength: 6,  // blogs per page
+      pageLength: 5,  // blogs per page
       searching: false,    
       info: false,   
       lengthChange: false,
       ordering: false,
+      pagingType: "simple",
       ajax: {
         url: '/api/v1/blog/list',
         type: 'POST',
@@ -82,21 +96,31 @@ $(document).ready(function () {
         blogs.each(function(blog) {
 
           $("#blogContainer").append(`
-            <a class="blog" href="/blog/${blog.categorySlug}/${blog.titleSlug}" style="text-decoration: none; max-width:100%">
+            <div class="blog">
               <div class="card h-100 shadow-sm p-1">
+              <a class="blog" href="/blog/${blog.categorySlug}/${blog.titleSlug}" style="text-decoration: none; max-width:100%">
                 <img src="${blog.coverImageUrl}" class="card-img-top" alt="Banner">
                 <div class="card-body">
-                  <h5 class="card-title">${blog.title}</h5>
+                  <h5 class="card-title" style="color:black">${blog.title}</h5>
                   <p class="card-text text-muted">By ${blog.author || ""}</p>
-                  ${blog.category ? `<p class="blog-category">${blog.category}</p>` : `<div></div>`}
+              </a>
+                  <div style="display:flex; flex-direction:row;align-items:center; justify-content:space-between;">
+                    ${blog.category ? `<p class="blog-category">${blog.category}</p>` : `<div></div>`}
+                    ${(blog.publishedBy == userId) ? `<div style="display:flex; flex-direction:row; gap:10px; align-items:center;">
+                      <button class="btn btn-sm btn-danger deleteBtn" data-id="${blog.id}">
+                        <i class="bi bi-trash"></i> delete
+                      </button>
+                    </div>` : `<div><div>`}
+                  </div>
                 </div>
               </div>
-            </a>
+            </div>
           `);
         });
 
-        // 👇 Move pagination controls
-        $("#blogPagination").html($(blogTable.table().container()).find('.dataTables_paginate'));
+        // 👇 Always keep pagination synced
+        let paginate = $(blogTable.table().container()).find('.dataTables_paginate');
+        $("#blogPagination").empty().append(paginate);
       }
     })
   }
@@ -131,7 +155,42 @@ $(document).ready(function () {
   // Initial fetch
   fetchCount();
 
+  // var myModal = new bootstrap.Modal(document.getElementById('formModal'));
+  var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 
+  // $(document).on("click", ".editBtn", function() {
+  //   let id = $(this).data("id");
+  //   $("#hiddenId").val(id);
+  //   myModal.show();
+  // });
+
+  $(document).on("click", ".deleteBtn", function() {
+    let id = $(this).data("id");
+    $("#hiddenIdInDeleteModal").val(id);
+    deleteModal.show();
+  });
+  $("#deleteForm").on("submit", function(e) {
+    e.preventDefault();
+    let formData = {};
+    $.each($(this).serializeArray(), function(_, field) {
+      formData[field.name] = field.value;
+    });
+    $.ajax({
+      url: `/api/v1/blog/delete`,
+      type: "DELETE",
+      data: formData,
+      success: function(response) {
+        if(response.success) {
+          location.reload();
+        }
+      },
+      error: function(error) {
+
+      }
+    });
+    myModal.hide();
+    this.reset();
+  });
   // Search blogs
   $("#searchInput").on("keyup", function () {
     blogTable.ajax.reload();
@@ -153,9 +212,8 @@ $(document).ready(function () {
       processData: false,
       contentType: false,
       success: function(response) {
-        console.log(response);
         if(response.success) {
-          window.location.href = "/dashboard";
+          location.reload();
         }
       },
       error: function(error) {

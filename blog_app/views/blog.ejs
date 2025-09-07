@@ -26,12 +26,16 @@
         </div>
         <div class="comment-container my-3">
             <h2>Comments</h2>
-            <form class="my-1 " style="display: flex; gap:10px" id="comment-form">
-                <input class="form-control" id="commentbox" type="text" placeholder="Enter your comment">
-                <button class="btn btn-outline-light" type="submit">→</button>
-            </form>
-            <div id="comments">
-            </div>
+            <% if (permissions.includes("comment.create")) { %>
+                <form class="my-1 " style="display: flex; gap:10px" id="comment-form">
+                    <input class="form-control" id="commentbox" type="text" placeholder="Enter your comment">
+                    <button class="btn btn-outline-light" type="submit">→</button>
+                </form>
+            <% } %>
+            <% if (permissions.includes("comment.list")) { %>
+                <div id="comments">
+                </div>
+            <% } %>
         </div>
     </main>
 

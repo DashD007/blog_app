@@ -51,6 +51,7 @@ main{
   position: relative;
 }
 
+
 #detail-card-container{
   width: 80%;
   min-width: 540px;
@@ -69,7 +70,6 @@ main{
   flex-wrap: wrap;
   gap:10px;
 }
-
 
 .detail-card{
   height: 140px;
@@ -114,7 +114,7 @@ table.dataTable {
   width: 100% !important;
 }
 
-#user-creation-dailog{
+#role-creation-dailog{
   width:80%;
   margin: 0 auto;
   padding: 7px 10px;
@@ -128,8 +128,41 @@ table.dataTable {
   height: calc(100vh - 60px);
 }
 
-#user-creation{
+
+#role-creation{
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+
+.multiselect-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem;
+  padding: .25rem;
+  /* border: 1px solid #ced4da; */
+  border-radius:10px;
+  min-height: 45px;
+  cursor: pointer;
+}
+.chip {
+  background: #0d6efd;
+  color: white;
+  padding: 0 .5rem;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+.chip .remove {
+  cursor: pointer;
+  font-size: .9rem;
+}
+
+input.error {
+  border-color: #dc3545; /* Bootstrap red */
+}
+input.valid {
+  border-color: #28a745; /* Bootstrap green */
 }

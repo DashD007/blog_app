@@ -1,7 +1,9 @@
-function attachUserRole(req, res, next) {
+function attachUserPermissions(req, res, next) {
     const {user} = req.session;
-    res.locals.role = user?.roleName;
+    res.locals.username = user?.username;
+    res.locals.userId = user?.id;
+    res.locals.permissions = user?.permissions;
     next();
 }
 
-export default attachUserRole;
+export default attachUserPermissions;

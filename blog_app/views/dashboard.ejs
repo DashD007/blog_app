@@ -22,7 +22,7 @@
   <!-- Navbar / Header -->
   <nav>
 
-    <% if (role === 'admin') { %>
+    <% if (permissions.includes("menu")) { %>
       <button class="btn btn-outline-light menu-btn">☰</button>
     <% } %> 
 
@@ -30,27 +30,35 @@
       <input class="form-control me-2" id="searchInput" type="search" placeholder="Search blogs">
     </form>
 
-    <button class="btn btn-danger ms-auto" id="logout-btn">Logout</button>
+    <div style="display: flex; gap:10px; align-items: center;">
+      <img src="https://avatar.iran.liara.run/username?username=<%= username %>" 
+        alt="user" 
+        style="width:40px; aspect-ratio: 1/1; border-radius: 50%;"/>
+      <button class="btn btn-danger ms-auto" id="logout-btn">Logout</button>
+    </div>
   </nav>
 
-
-  <!-- Sidebar -->
-  <div id="sidebar" class="bg-dark text-white position-fixed h-100 p-3">
-    <div id="menu-btn-container">
-      <h4 class="mb-4">Menu</h5>
-        <button class="btn btn-outline-light me-3 menu-btn">X</button>
-    </div>
-    <ul class="nav flex-column mt-3">
-      <li class="nav-item"><a href="/dashboard" class="nav-link text-white">Dashboard</a></li>
-      <li class="nav-item"><a href="/categorymaster" class="nav-link text-white">Category master</a></li>
-      <li class="nav-item"><a href="/usermaster" class="nav-link text-white">User and Role master</a></li>
-    </ul>
-  </div>
+    <% if (permissions.includes("menu")) { %>
+      <!-- Sidebar -->
+      <div id="sidebar" class="bg-dark text-white position-fixed h-100 p-3">
+        <div id="menu-btn-container">
+          <h4 class="mb-4">Menu</h5>
+            <button class="btn btn-outline-light me-3 menu-btn">X</button>
+        </div>
+        <ul class="nav flex-column mt-3">
+          <li class="nav-item"><a href="/dashboard" class="nav-link text-white">Dashboard</a></li>
+          <li class="nav-item"><a href="/categorymaster" class="nav-link text-white">Category master</a></li>
+          <li class="nav-item"><a href="/usermaster" class="nav-link text-white">User master</a></li>
+          <li class="nav-item"><a href="/rolemaster" class="nav-link text-white">Role master</a></li>
+        </ul>
+      </div>
+    <% } %>
+  
 
   <!-- Main Section -->
   <main class="container-fluid">
     <div id="detail-card-container">
-      <% if (role === 'admin') { %>
+      <% if (permissions.includes("blog.count")) { %>
         <div class="detail-card">
           <p class="count-text" id="totalCount"></p>
           <p class="card-name-text">total no. of blogs</p>
@@ -58,17 +66,19 @@
       <% } %>
       
 
-      <% if (role === 'admin') { %>
+      <% if (permissions.includes("blog.count")) { %>
         <div class="detail-card">
           <p class="count-text" id="yourBlogsCount"></p>
           <p class="card-name-text">No. of blogs published by you</p>
         </div>
       <% } %>
       
-      <button class="detail-card add-blog" >
-        <p class="count-text add-symbol-text">+</p>
-        <p class="card-name-text">Add blog</p>
-      </button>
+      <% if (permissions.includes("blog.create")) { %>
+        <button class="detail-card add-blog" >
+          <p class="count-text add-symbol-text">+</p>
+          <p class="card-name-text">Add blog</p>
+        </button>
+      <% } %>
       
     </div>
     <!-- Hidden table just for DataTables -->
@@ -81,51 +91,74 @@
         </tr>
       </thead>
     </table>
-    <div class="blog-container" id="blogContainer">
-    </div>
-    <div class="mt-3 blog-container" id="blogPagination" style="display: flex; justify-content: center;"></div>
-    <div id="blog-creation-dailog">
-      <div style="display: flex; flex-direction: row; justify-content:space-between; width: 50%; margin:0 auto; margin-bottom: 10px;">
-        <h2>Add blog</h2>
-        <button class="btn add-blog" style="border: none; background-color: #2C2C2C; color:white">X</button>
+    <% if (permissions.includes("blog.list")) { %>
+      <div class="blog-container" id="blogContainer">
       </div>
-      <form id="blog-creation">
-        <div class="mb-3 w-50">
-          <label for="title" class="form-label">Title</label>
-          <input 
-            type="text" 
-            class="form-control" 
-            id="title" 
-            placeholder="Enter title" 
-            required>
+    <% } %>
+    <div class="mt-3 blog-container" id="blogPagination" style="display: flex; justify-content: center;"></div>
+    <% if (permissions.includes("blog.create")) { %>
+      <div id="blog-creation-dailog" >
+        <div style="display: flex; flex-direction: row; justify-content:space-between; width: 50%; margin:0 auto; margin-bottom: 10px;">
+          <h2>Add blog</h2>
+          <button class="btn add-blog" style="border: none; background-color: #2C2C2C; color:white">X</button>
         </div>
-        <div class="mb-3 w-50">
-          <label for="coverimage" class="form-label">Image</label>
-          <input 
-            type="file" 
-            class="form-control" 
-            id="coverimage" 
-            accept="image/*"
-            placeholder="upload cover image" 
-            required>
-        </div>
-        <div class="mb-3 w-50">
-          <label for="content" class="form-label">Content</label>
-            <textarea class="form-control" id="content" placeholder="Enter content" required>
-            </textarea>
-        </div>
+        <form id="blog-creation">
+          <div class="mb-3 w-50">
+            <label for="title" class="form-label">Title</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="title" 
+              placeholder="Enter title" 
+              required>
+          </div>
+          <div class="mb-3 w-50">
+            <label for="coverimage" class="form-label">Image</label>
+            <input 
+              type="file" 
+              class="form-control" 
+              id="coverimage" 
+              accept="image/*"
+              placeholder="upload cover image" 
+              required>
+          </div>
+          <div class="mb-3 w-50">
+            <label for="content" class="form-label">Content</label>
+              <textarea class="form-control" id="content" placeholder="Enter content" required></textarea>
+          </div>
 
-        <div class="mb-3 w-50" >
-          <label for="category" class="form-label">Category</label>
-          <select 
-            class="form-control select-category" 
-            id="category" 
-            placeholder="select category" 
-            required>
-          </select>
+          <div class="mb-3 w-50" >
+            <label for="category" class="form-label">Category</label>
+            <select 
+              class="form-control select-category" 
+              id="category" 
+              placeholder="select category" 
+              required>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary w-50 align-middle">Add</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content rounded-3 shadow">
+          <div class="modal-header">
+            <h5 class="modal-title" id="formModalLabel">Are you sure?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form id="deleteForm">
+            <div class="modal-body">
+              <input type="hidden" name="id" id="hiddenIdInDeleteModal">
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-success">Yes</button>
+            </div>
+          </form>
         </div>
-        <button type="submit" class="btn btn-primary w-50 align-middle">Add</button>
-      </form>
+      </div>
     </div>
   </main>
 
@@ -137,6 +170,10 @@
     integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q"
     crossorigin="anonymous"></script>
   <script src="/toast/script.js"></script>
+  <script>
+    // Pass permissions from EJS into frontend
+    const userId = <%- JSON.stringify(userId) %>;
+  </script>
   <script src="/dashboard/script.js"></script>
 </body>
 

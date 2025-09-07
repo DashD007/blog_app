@@ -50,3 +50,40 @@ export const loginSchema = Joi.object({
                           "string.min": "Password must be at least 6 characters long",
                           "string.max": "Password must be at most 40 characters long",}),
 });
+
+export const forgetPasswordSchema = Joi.object({
+  email: Joi
+        .string()
+        .email()
+        .required()
+        .messages({"string.empty":"Email is required",
+                "string.email": "Please provide a valid email",
+                }),
+});
+
+export const validateOTPSchema = Joi.object({
+      email: Joi
+            .string()
+            .email()
+            .required()
+            .messages({"string.empty":"Email is required",
+                  "string.email": "Please provide a valid email",
+                  }),
+
+      otp: Joi
+            .string()
+            .required()
+            .length(6)
+            .messages({"string.empty":"otp is required",
+                  "string.length": "OTP must be 6 characters long",
+                  }),
+
+      newPassword: Joi
+              .string()
+              .min(6)
+              .max(40)
+              .required()
+              .messages({"string.empty":"Password is required",
+                          "string.min": "Password must be at least 6 characters long",
+                          "string.max": "Password must be at most 40 characters long",}),
+});

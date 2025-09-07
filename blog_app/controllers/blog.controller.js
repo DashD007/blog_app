@@ -90,9 +90,9 @@ const deleteBlog = asyncHandler(async(req,res) => {
         throw new ApiError(400,"Permission prohibited");
     }
 
-    const {title,categoryId} = value;
+    const {id} = value;
 
-    const exist = await Blog.findOne({where:{slug:slugifyTitle(title),categoryId,publishedBy:user?.id}});
+    const exist = await Blog.findOne({where:{id,publishedBy:user?.id}});
 
     if(!exist){
         throw new ApiError(404,"Blog does not exist");
@@ -186,7 +186,7 @@ const listBlogs = asyncHandler(async(req,res) => {
     const {query} = req.body;
 
     const blogs = await Blog.findAll({
-        attributes:["title",["slug","titleSlug"],"coverImageUrl",[Sequelize.col("User.username"), "author"],[Sequelize.col("Category.slug"), "categorySlug"],[Sequelize.col("Category.name"), "category"]],
+        attributes:["id","title",["slug","titleSlug"],"publishedBy","coverImageUrl",[Sequelize.col("User.username"), "author"],[Sequelize.col("Category.slug"), "categorySlug"],[Sequelize.col("Category.name"), "category"]],
         include:[{
             model:Category,
             attributes:[],  

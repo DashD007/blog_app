@@ -1,55 +1,87 @@
 import {Router} from 'express';
 import ensureAuth from '../middlewares/auth.middleware.js';
 import protectedRoute from '../middlewares/protectRoute.middleware.js';
-import attachUserRole from "../middlewares/role.middleware.js";
+import attachUserPermissions from "../middlewares/role.middleware.js";
 
 const router = Router();
 
 router.get("/login",(req,res) => {
     try {
-        res.render('login');
+        return res.render('login');
     } catch (error) {
-        res.render('error',{error})
+        return res.render('error',{error})
+    }
+});
+
+router.get("/forgot",(req,res) => {
+    try {
+        return res.render('forget');
+    } catch (error) {
+        return res.render('error',{error})
+    }
+});
+
+router.use("/forgot/verify",(req,res) => {
+    try {
+        return res.render('verifyOTP');
+    } catch (error) {
+        return res.render('error',{error})
+    }
+});
+
+router.get("/dashboard",ensureAuth,attachUserPermissions,(req,res) => {
+    try {
+        return res.render('dashboard')
+    } catch (error) {
+        return res.render('error',{error})
+    }
+});
+
+router.get("/categorymaster",ensureAuth,protectedRoute,attachUserPermissions,(req,res) => {
+    try {
+        const {user} = req.session;
+        if(user?.permissions.includes("category.count") || user?.permissions.includes("category.list")|| user?.permissions.includes("category.create")){
+            return res.render('categorymaster');
+        }
+        return res.redirect("/dashboard");
+    } catch (error) {
+        return res.render('error',{error})
+    }
+});
+
+router.get("/usermaster",ensureAuth,protectedRoute,attachUserPermissions,(req,res) => {
+    try {
+        return res.render('usermaster');
+    } catch (error) {
+        return res.render('error',{error})
+    }
+});
+
+router.get("/rolemaster",ensureAuth,protectedRoute,attachUserPermissions,(req,res) => {
+    try {
+        return res.render('rolemaster');
+    } catch (error) {
+        return res.render('error',{error})
     }
 });
 
 
-router.get("/dashboard",ensureAuth,attachUserRole,(req,res) => {
+router.use("/blog",ensureAuth,attachUserPermissions,(req,res) => {
     try {
-        res.render('dashboard')
-    } catch (error) {
-        res.render('error',{error})
-    }
-});
-
-router.get("/categorymaster",ensureAuth,protectedRoute,attachUserRole,(req,res) => {
-    try {
-        res.render('categorymaster');
-    } catch (error) {
-        res.render('error',{error})
-    }
-});
-
-router.get("/usermaster",ensureAuth,protectedRoute,attachUserRole,(req,res) => {
-    try {
-        res.render('usermaster');
-    } catch (error) {
-        res.render('error',{error})
-    }
-})
-
-router.use("/blog",ensureAuth,attachUserRole,(req,res) => {
-    try {
+        const {user} = req.session;
+        if(!user?.permissions.includes("blog.get")){
+            return res.redirect("/dashboard");
+        }
         const [_,categorySlug,titleSlug] = req?.originalUrl.split("/");
-        res.render('blog',{categorySlug,titleSlug});
+        return res.render('blog',{categorySlug,titleSlug});
     } catch (error) {
-        res.render('error',{error})
+        return res.render('error',{error})
     }
 });
 
 
 router.use("/",(req,res) => {
-    res.render('error')
+    return res.render('error')
 })
 
 export default router;

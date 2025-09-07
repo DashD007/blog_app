@@ -15,13 +15,9 @@ const createBlogSchema = Joi.object({
 });
 
 const deleteBlogSchema = Joi.object({
-    title: Joi.string().min(3).required().messages({
-        "string.empty":"Title is required",
-        "string.min":"Tilte should be atleast 3 character long"
-    }),
-    categoryId: Joi.string().required().messages({
-        "string.empty":"Category is required",
-    }),
+    id: Joi.string().min(1).required().messages({
+        "string.empty":"Blog id is required",
+    })
 });
 
 const updateBlogSchema = Joi.object({
